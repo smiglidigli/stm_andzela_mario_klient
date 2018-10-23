@@ -1,0 +1,1 @@
+include ':app', ':ksoap2-android-2.5.2'

@@ -1,4 +1,4 @@
-package stm.msu.mapa.stm_andzela_mario;
+package stm.msu.mapa.stm_andzela_mario_klient;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("stm.msu.mapa.stm_andzela_mario", appContext.getPackageName());
+        assertEquals("stm.msu.mapa.stm_andzela_mario_klient", appContext.getPackageName());
     }
 }
