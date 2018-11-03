@@ -1,5 +1,6 @@
 package stm.msu.mapa.stm_andzela_mario_klient;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -30,7 +31,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class MainActivity extends Activity implements Marshal {
@@ -69,17 +69,11 @@ public class MainActivity extends Activity implements Marshal {
         });
 
         imageView = findViewById(R.id.mapView);
-        java.io.FileInputStream in = null;
-        try {
-            in = openFileInput("map.png");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        imageView.setImageBitmap(BitmapFactory.decodeStream(in));
 
         imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                new SimpleDrawingView(imageView.getContext(), null);
+                new SimpleDrawingView(v.getContext());
             }
         });
 
@@ -183,16 +177,16 @@ public class MainActivity extends Activity implements Marshal {
         }
     }
 
-    public class SimpleDrawingView extends View {
+    public class SimpleDrawingView extends android.support.v7.widget.AppCompatImageView {
         private final int paintColor = Color.BLACK;
         private Paint drawPaint;
-        float pointX;
-        float pointY;
-        float startX;
-        float startY;
+        float x1;
+        float x2;
+        float y1;
+        float y2;
 
-        public SimpleDrawingView(Context context, AttributeSet attr) {
-            super(context, attr);
+        public SimpleDrawingView(Context context) {
+            super(context);
             setFocusable(true);
             setFocusableInTouchMode(true);
             setupPaint();
@@ -211,27 +205,27 @@ public class MainActivity extends Activity implements Marshal {
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            pointX = event.getX();
-            pointY = event.getY();
-            // Checks for the event that occurs
+            float x = event.getX();
+            float y = event.getY();
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    startX = pointX;
-                    startY = pointY;
+                    x1 = x;
+                    y1 = y;
                     return true;
-                case MotionEvent.ACTION_MOVE:
+                case MotionEvent.ACTION_UP:
+                   x2 = x;
+                   y2 = y;
+                    postInvalidate();
                     break;
                 default:
                     return false;
             }
-            // Force a view to draw again
-            postInvalidate();
             return true;
         }
 
         @Override
         protected void onDraw(Canvas canvas) {
-            canvas.drawRect(startX, startY, pointX, pointY, drawPaint);
+                canvas.drawRect(x1, y1, x2, y2, drawPaint);
         }
     }
 }
