@@ -124,7 +124,7 @@
         app:layout_constraintStart_toEndOf="@+id/lon1_box"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <stm.msu.mapa.stm_andzela_mario_klient.MapView
         android:id="@+id/mapView"
         android:layout_width="368dp"
         android:layout_height="1000px"

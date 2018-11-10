@@ -33,6 +33,8 @@ import android.widget.ImageView;
 
 import java.io.IOException;
 
+import stm.msu.mapa.stm_andzela_mario_klient.MapView;
+
 public class MainActivity extends Activity implements Marshal {
     private String URL = "http://10.0.2.2:8080/ImageEncoder/WebEncoder?WSDL";
     private String NAMESPACE = "http://encoder.angelika.org/";
@@ -40,7 +42,8 @@ public class MainActivity extends Activity implements Marshal {
     private String SOAP_ACTION_GET_RESIZED_IMAGE =  "http://encoder.angelika.org/crop/";
     private String METHOD_GET_FULL_IMAGE = "getBinaryImage";
     private String SOAP_ACTION_GET_FULL_IMAGE =  "http://encoder.angelika.org/getBinaryImage/";
-    ImageView imageView;
+//    ImageView imageView;
+MapView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +76,8 @@ public class MainActivity extends Activity implements Marshal {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SimpleDrawingView(v.getContext());
+//                new SimpleDrawingView(v.getContext());
+                new MapView(v.getContext());
             }
         });
 
@@ -177,56 +181,57 @@ public class MainActivity extends Activity implements Marshal {
         }
     }
 
-    public class SimpleDrawingView extends android.support.v7.widget.AppCompatImageView {
-        private final int paintColor = Color.BLACK;
-        private Paint drawPaint;
-        float x1;
-        float x2;
-        float y1;
-        float y2;
-
-        public SimpleDrawingView(Context context) {
-            super(context);
-            setFocusable(true);
-            setFocusableInTouchMode(true);
-            setupPaint();
-        }
-
-        private void setupPaint() {
-            // Setup paint with color and stroke styles
-            drawPaint = new Paint();
-            drawPaint.setColor(paintColor);
-            drawPaint.setAntiAlias(true);
-            drawPaint.setStrokeWidth(5);
-            drawPaint.setStyle(Paint.Style.STROKE);
-            drawPaint.setStrokeJoin(Paint.Join.ROUND);
-            drawPaint.setStrokeCap(Paint.Cap.ROUND);
-        }
-
-        @Override
-        public boolean onTouchEvent(MotionEvent event) {
-            float x = event.getX();
-            float y = event.getY();
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    x1 = x;
-                    y1 = y;
-                    return true;
-                case MotionEvent.ACTION_UP:
-                   x2 = x;
-                   y2 = y;
-                    postInvalidate();
-                    break;
-                default:
-                    return false;
-            }
-            return true;
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-                canvas.drawRect(x1, y1, x2, y2, drawPaint);
-        }
-    }
+//    public class SimpleDrawingView extends android.support.v7.widget.AppCompatImageView {
+//        private final int paintColor = Color.BLACK;
+//        private Paint drawPaint;
+//        float x1;
+//        float x2;
+//        float y1;
+//        float y2;
+//
+//        public SimpleDrawingView(Context context) {
+//            super(context);
+//            setFocusable(true);
+//            setFocusableInTouchMode(true);
+//            setupPaint();
+//        }
+//
+//        private void setupPaint() {
+//            // Setup paint with color and stroke styles
+//            drawPaint = new Paint();
+//            drawPaint.setColor(paintColor);
+//            drawPaint.setAntiAlias(true);
+//            drawPaint.setStrokeWidth(5);
+//            drawPaint.setStyle(Paint.Style.STROKE);
+//            drawPaint.setStrokeJoin(Paint.Join.ROUND);
+//            drawPaint.setStrokeCap(Paint.Cap.ROUND);
+//        }
+//
+//        @Override
+//        public boolean onTouchEvent(MotionEvent event) {
+//            float x = event.getX();
+//            float y = event.getY();
+//            switch (event.getAction()) {
+//                case MotionEvent.ACTION_DOWN:
+//                    x1 = x;
+//                    y1 = y;
+//                    return true;
+//                case MotionEvent.ACTION_UP:
+//                   x2 = x;
+//                   y2 = y;
+//                    postInvalidate();
+//                    break;
+//                default:
+//                    return false;
+//            }
+//            return true;
+//        }
+//
+//        @Override
+//        protected void onDraw(Canvas canvas) {
+//             super.draw(canvas);
+//            canvas.drawRect(x1, y1, x2, y2, drawPaint);
+//        }
+//    }
 }
 
