@@ -26,6 +26,15 @@ public class MapView extends android.support.v7.widget.AppCompatImageView {
     float endX;
     float endY;
 
+    private BoundariesChangeListener onBoundaryChangeListener;
+    public interface BoundariesChangeListener {
+        public void onBoundaryChanged(float[] coords);
+    }
+
+    public void setBoundariesChangeListener(BoundariesChangeListener listener) {
+        this.onBoundaryChangeListener = listener;
+    }
+
     private class Holder {
         Path path;
         Paint paint;
@@ -72,6 +81,7 @@ public class MapView extends android.support.v7.widget.AppCompatImageView {
     }
 
     private void init() {
+        this.onBoundaryChangeListener = null;
         holderList.add(new Holder(color, width));
     }
 
@@ -82,6 +92,7 @@ public class MapView extends android.support.v7.widget.AppCompatImageView {
         for (Holder holder : holderList) {
             canvas.drawRect(startX, startY, tempX, tempY, holder.paint);
         }
+        this.onBoundaryChangeListener.onBoundaryChanged(new float[] {startX, startY, tempX, tempY});
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -119,6 +130,12 @@ public class MapView extends android.support.v7.widget.AppCompatImageView {
         for (Holder holder : holderList) {
             holder.path.reset();
         }
+        startX = 0;
+        startY = 0;
+        tempX = 0;
+        tempY = 0;
+        endX = 0;
+        endY = 0;
         invalidate();
     }
 

@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -42,45 +43,71 @@ public class MainActivity extends Activity implements Marshal {
     private String SOAP_ACTION_GET_RESIZED_IMAGE =  "http://encoder.angelika.org/crop/";
     private String METHOD_GET_FULL_IMAGE = "getBinaryImage";
     private String SOAP_ACTION_GET_FULL_IMAGE =  "http://encoder.angelika.org/getBinaryImage/";
-//    ImageView imageView;
-MapView imageView;
+    MapView imageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final EditText lat1_txt = findViewById(R.id.lat1_box);
+        final EditText lon1_txt = findViewById(R.id.lon1_box);
+        final EditText lat2_txt = findViewById(R.id.lat2_box);
+        final EditText lon2_txt = findViewById(R.id.lon2_box);
 
-        Button go_button = findViewById(R.id.go_button);
+        final Button reset_button = findViewById(R.id.reset_button);
+        final Button go_button = findViewById(R.id.go_button);
+        imageView = findViewById(R.id.mapView);
+
         go_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-
-                EditText lat1_txt = findViewById(R.id.lat1_box);
-                double lat1 = Double.parseDouble(lat1_txt.getText().toString());
-                EditText lat2_txt = findViewById(R.id.lat2_box);
-                double lat2 = Double.parseDouble(lat2_txt.getText().toString());
-                EditText lon1_txt = findViewById(R.id.lon1_box);
-                double lon1 = Double.parseDouble(lon1_txt.getText().toString());
-                EditText lon2_txt = findViewById(R.id.lon2_box);
-                double lon2 = Double.parseDouble(lon2_txt.getText().toString());
-                new CallGetMapWebService().execute(lat1, lat2, lon1, lon2);
+                try {
+                    double lat1 = Double.parseDouble(lat1_txt.getText().toString());
+                    double lat2 = Double.parseDouble(lat2_txt.getText().toString());
+                    double lon1 = Double.parseDouble(lon1_txt.getText().toString());
+                    double lon2 = Double.parseDouble(lon2_txt.getText().toString());
+                    new CallGetMapWebService().execute(lat1, lat2, lon1, lon2);
+                    arg0.setEnabled(false);
+                    reset_button.setEnabled(true);
+                    lat1_txt.clearFocus();
+                    lat2_txt.clearFocus();
+                    lon1_txt.clearFocus();
+                    lon2_txt.clearFocus();
+                    imageView.resetPaths();
+                }
+                catch (Exception e){
+                    Toast.makeText(getApplicationContext(),"Enter proper values",Toast.LENGTH_LONG);
+                }
             }
         });
-        Button reset_button = findViewById(R.id.reset_button);
+
+        reset_button.setEnabled(false);
         reset_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 new CallResetWebService().execute("");
+               arg0.setEnabled(false);
+                go_button.setEnabled(true);
+                lat1_txt.setText("");
+                lat2_txt.setText("");
+                lon1_txt.setText("");
+                lon2_txt.setText("");
+                lat1_txt.clearFocus();
+                lat2_txt.clearFocus();
+                lon1_txt.clearFocus();
+                lon2_txt.clearFocus();
+                imageView.resetPaths();
             }
         });
 
-        imageView = findViewById(R.id.mapView);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
+        imageView.setBoundariesChangeListener(new MapView.BoundariesChangeListener() {
             @Override
-            public void onClick(View v) {
-//                new SimpleDrawingView(v.getContext());
-                new MapView(v.getContext());
+            public void onBoundaryChanged(float[] coords) {
+                lat1_txt.setText(Float.toString(coords[0]));
+                lon1_txt.setText(Float.toString(coords[1]));
+                lat2_txt.setText(Float.toString(coords[2]));
+                lon2_txt.setText(Float.toString(coords[3]));
             }
         });
-
 
     }
 
@@ -180,58 +207,6 @@ MapView imageView;
             return "something`s wrong?";
         }
     }
-
-//    public class SimpleDrawingView extends android.support.v7.widget.AppCompatImageView {
-//        private final int paintColor = Color.BLACK;
-//        private Paint drawPaint;
-//        float x1;
-//        float x2;
-//        float y1;
-//        float y2;
-//
-//        public SimpleDrawingView(Context context) {
-//            super(context);
-//            setFocusable(true);
-//            setFocusableInTouchMode(true);
-//            setupPaint();
-//        }
-//
-//        private void setupPaint() {
-//            // Setup paint with color and stroke styles
-//            drawPaint = new Paint();
-//            drawPaint.setColor(paintColor);
-//            drawPaint.setAntiAlias(true);
-//            drawPaint.setStrokeWidth(5);
-//            drawPaint.setStyle(Paint.Style.STROKE);
-//            drawPaint.setStrokeJoin(Paint.Join.ROUND);
-//            drawPaint.setStrokeCap(Paint.Cap.ROUND);
-//        }
-//
-//        @Override
-//        public boolean onTouchEvent(MotionEvent event) {
-//            float x = event.getX();
-//            float y = event.getY();
-//            switch (event.getAction()) {
-//                case MotionEvent.ACTION_DOWN:
-//                    x1 = x;
-//                    y1 = y;
-//                    return true;
-//                case MotionEvent.ACTION_UP:
-//                   x2 = x;
-//                   y2 = y;
-//                    postInvalidate();
-//                    break;
-//                default:
-//                    return false;
-//            }
-//            return true;
-//        }
-//
-//        @Override
-//        protected void onDraw(Canvas canvas) {
-//             super.draw(canvas);
-//            canvas.drawRect(x1, y1, x2, y2, drawPaint);
-//        }
-//    }
 }
+
 
