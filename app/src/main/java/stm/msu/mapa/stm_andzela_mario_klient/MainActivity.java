@@ -249,19 +249,20 @@ public class MainActivity extends Activity implements Marshal {
         public static double[] ReturnCorrectedCoords(double[] params) {
             // format used in service call: lat1, lat2, lon1, lon2
             double[] output = params.clone();
-            //musi byc wylaczone do testowania ConvertPixelsToCoords() z nowymi metodami
-//            if (params[0] > params[1]) {
-//                output[0] = params[1];
-//                output[1] = params[0];
-//            }
-//            if (params[2] > params[3]) {
-//                output[2] = params[3];
-//                output[3] = params[2];
-//            }
-//            if (output[0] < MIN_MAP || output[0] > MAX_MAP) output[0] = MIN_MAP;
-//            if (output[2] < MIN_MAP || output[2] > MAX_MAP) output[2] = MIN_MAP;
-//            if (output[1] > MAX_MAP || output[1] < MIN_MAP) output[1] = MAX_MAP;
-//            if (output[3] > MAX_MAP || output[3] < MIN_MAP) output[3] = MAX_MAP;
+
+            if (params[0] > params[1]) {
+                output[0] = params[1];
+                output[1] = params[0];
+            }
+
+            if (params[2] > params[3]) {
+                output[2] = params[3];
+                output[3] = params[2];
+            }
+            if (output[0] < MIN_MAP || output[0] > MAX_MAP) output[0] = MIN_MAP;
+            if (output[2] < MIN_MAP || output[2] > MAX_MAP) output[2] = MIN_MAP;
+            if (output[1] > MAX_MAP || output[1] < MIN_MAP) output[1] = MAX_MAP;
+            if (output[3] > MAX_MAP || output[3] < MIN_MAP) output[3] = MAX_MAP;
             return output;
         }
 
@@ -271,15 +272,15 @@ public class MainActivity extends Activity implements Marshal {
             double mapHeight = MAX_Y - MIN_Y;
             double[] coords = new double[4];
 
-//            coords[0] = MIN_X + (pixels[0] * mapLength)/1000;
-//            coords[1] = MIN_X + (pixels[1] * mapLength)/1000;
-//            coords[2] = MIN_Y + (pixels[2] * mapHeight)/1000;
-//            coords[3] = MIN_Y + (pixels[3] * mapHeight)/1000;
+            coords[0] = MIN_X + (pixels[0] * mapLength)/1000;
+            coords[1] = MIN_X + (pixels[1] * mapLength)/1000;
+            coords[2] = MIN_Y + ((MAX_MAP - pixels[2]) * mapHeight)/1000;
+            coords[3] = MIN_Y + ((MAX_MAP - pixels[3]) * mapHeight)/1000;
 
-            coords[0] = MAX_X - pixels[2] * mapLength / 1000;//szerokosc geo lewy punkt
-            coords[1] = MAX_X - pixels[3] * mapLength / 1000;//szerokosc geo prawy punkt
-            coords[2] = MIN_Y + pixels[0] * mapHeight / 1000;//dlugoosc geo lewy punkt
-            coords[3] = MIN_Y + pixels[1] * mapHeight / 1000;//dlugosc geo prawy punkt
+//            coords[0] = MAX_X - pixels[2] * mapLength / 1000;//szerokosc geo lewy punkt
+//            coords[1] = MAX_X - pixels[3] * mapLength / 1000;//szerokosc geo prawy punkt
+//            coords[2] = MIN_Y + pixels[0] * mapHeight / 1000;//dlugoosc geo lewy punkt
+//            coords[3] = MIN_Y + pixels[1] * mapHeight / 1000;//dlugosc geo prawy punkt
             return coords;
 
         }
