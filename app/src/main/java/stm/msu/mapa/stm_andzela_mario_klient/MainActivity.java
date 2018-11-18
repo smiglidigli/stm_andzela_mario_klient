@@ -1,16 +1,12 @@
 package stm.msu.mapa.stm_andzela_mario_klient;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.Marshal;
 import org.ksoap2.serialization.SoapObject;
@@ -22,27 +18,22 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
-import android.util.AttributeSet;
 import android.util.Base64;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.IOException;
-
-import stm.msu.mapa.stm_andzela_mario_klient.MapView;
 
 public class MainActivity extends Activity implements Marshal {
     private String URL = "http://10.0.2.2:8080/ImageEncoder/WebEncoder?WSDL";
     private String NAMESPACE = "http://encoder.angelika.org/";
     private String METHOD_GET_RESIZED_IMAGE = "crop";
-    private String SOAP_ACTION_GET_RESIZED_IMAGE =  "http://encoder.angelika.org/crop/";
+    private String SOAP_ACTION_GET_RESIZED_IMAGE = "http://encoder.angelika.org/crop/";
     private String METHOD_GET_FULL_IMAGE = "getBinaryImage";
-    private String SOAP_ACTION_GET_FULL_IMAGE =  "http://encoder.angelika.org/getBinaryImage/";
+    private String SOAP_ACTION_GET_FULL_IMAGE = "http://encoder.angelika.org/getBinaryImage/";
     MapView imageView;
 
     @Override
@@ -56,31 +47,35 @@ public class MainActivity extends Activity implements Marshal {
         lat1_txt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     lat1_txt.setText("");
                 }
-            }});
+            }
+        });
         lon1_txt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     lon1_txt.setText("");
                 }
-            }});
+            }
+        });
         lat2_txt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     lat2_txt.setText("");
                 }
-            }});
+            }
+        });
         lon2_txt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     lon2_txt.setText("");
                 }
-            }});
+            }
+        });
 
         final Button reset_button = findViewById(R.id.reset_button);
         final Button go_button = findViewById(R.id.go_button);
@@ -93,7 +88,7 @@ public class MainActivity extends Activity implements Marshal {
                     double lat2 = Double.parseDouble(lat2_txt.getText().toString());
                     double lon1 = Double.parseDouble(lon1_txt.getText().toString());
                     double lon2 = Double.parseDouble(lon2_txt.getText().toString());
-                    double[] coords = GlobalConstants.ReturnCorrectedCoords(new double[] {lat1, lat2, lon1, lon2});
+                    double[] coords = GlobalConstants.ReturnCorrectedCoords(new double[]{lat1, lat2, lon1, lon2});
                     new CallGetMapWebService().execute(coords[0], coords[1], coords[2], coords[3]);
                     arg0.setEnabled(false);
                     reset_button.setEnabled(true);
@@ -102,9 +97,8 @@ public class MainActivity extends Activity implements Marshal {
                     lon1_txt.clearFocus();
                     lon2_txt.clearFocus();
                     imageView.resetPaths();
-                }
-                catch (Exception e){
-                    Toast.makeText(getApplicationContext(),"Enter proper values",Toast.LENGTH_LONG);
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Enter proper values", Toast.LENGTH_LONG);
                 }
             }
         });
@@ -113,8 +107,9 @@ public class MainActivity extends Activity implements Marshal {
         reset_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 new CallResetWebService().execute("");
-               arg0.setEnabled(false);
+                arg0.setEnabled(false);
                 go_button.setEnabled(true);
+                imageView.resetPaths();
                 lat1_txt.setText("");
                 lat2_txt.setText("");
                 lon1_txt.setText("");
@@ -123,7 +118,7 @@ public class MainActivity extends Activity implements Marshal {
                 lat2_txt.clearFocus();
                 lon1_txt.clearFocus();
                 lon2_txt.clearFocus();
-                imageView.resetPaths();
+
             }
         });
 
@@ -132,13 +127,13 @@ public class MainActivity extends Activity implements Marshal {
             @Override
             public void onBoundaryChanged(float[] coords) {
 
-                double[] coords_changed = GlobalConstants.ReturnCorrectedCoords(new double[] {coords[0], coords[2], coords[1], coords[3]});
+                double[] coords_changed = GlobalConstants.ReturnCorrectedCoords(new double[]{coords[0], coords[2], coords[1], coords[3]});
                 double[] coords_lat_lon = GlobalConstants.ConvertPixelsToCoords(coords_changed);
 
                 lat1_txt.setText(Double.toString(coords_lat_lon[0]));
-                lon1_txt.setText(Double.toString(coords_lat_lon[2]));
-                lat2_txt.setText(Double.toString(coords_lat_lon[1]));
-                lon2_txt.setText(Double.toString(coords_lat_lon[3]));
+                lon1_txt.setText(Double.toString(coords_lat_lon[2]));//2
+                lat2_txt.setText(Double.toString(coords_lat_lon[1]));//1
+                lon2_txt.setText(Double.toString(coords_lat_lon[3]));//3
             }
         });
 
@@ -202,11 +197,11 @@ public class MainActivity extends Activity implements Marshal {
 
             try {
                 androidHttpTransport.call(SOAP_ACTION_GET_RESIZED_IMAGE, envelope);
-                SoapPrimitive  resultsRequestSOAP = (SoapPrimitive) envelope.getResponse();
+                SoapPrimitive resultsRequestSOAP = (SoapPrimitive) envelope.getResponse();
                 return resultsRequestSOAP.toString();
             } catch (Exception e) {
 
-                Log.e("Activity",e.toString());
+                Log.e("Activity", e.toString());
             }
             return "something`s wrong?";
         }
@@ -231,17 +226,17 @@ public class MainActivity extends Activity implements Marshal {
 
             try {
                 androidHttpTransport.call(SOAP_ACTION_GET_FULL_IMAGE, envelope);
-                SoapPrimitive  resultsRequestSOAP = (SoapPrimitive) envelope.getResponse();
+                SoapPrimitive resultsRequestSOAP = (SoapPrimitive) envelope.getResponse();
                 String x = resultsRequestSOAP.toString();
                 return x;
             } catch (Exception e) {
-                Log.e("Activity",e.toString());
+                Log.e("Activity", e.toString());
             }
             return "something`s wrong?";
         }
     }
 
-    public static class GlobalConstants{
+    public static class GlobalConstants {
         //lat = x
         //lon = y
         static double MIN_X = 53.129281;
@@ -251,37 +246,41 @@ public class MainActivity extends Activity implements Marshal {
         static double MIN_MAP = 0;
         static double MAX_MAP = 1000;
 
-        public static double[] ReturnCorrectedCoords(double[] params){
+        public static double[] ReturnCorrectedCoords(double[] params) {
             // format used in service call: lat1, lat2, lon1, lon2
             double[] output = params.clone();
-            if (params[0] > params[1])
-            {
-                output[0] = params[1];
-                output[1] = params[0];
-            }
-            if (params[2] > params[3])
-            {
-                output[2] = params[3];
-                output[3] = params[2];
-            }
-            if (output[0] < MIN_MAP || output[0] > MAX_MAP) output[0] = MIN_MAP;
-            if (output[2] < MIN_MAP || output[2] > MAX_MAP) output[2] = MIN_MAP;
-            if (output[1] > MAX_MAP || output[1] < MIN_MAP) output[1] = MAX_MAP;
-            if (output[3] > MAX_MAP || output[3] < MIN_MAP) output[3] = MAX_MAP;
+            //musi byc wylaczone do testowania ConvertPixelsToCoords() z nowymi metodami
+//            if (params[0] > params[1]) {
+//                output[0] = params[1];
+//                output[1] = params[0];
+//            }
+//            if (params[2] > params[3]) {
+//                output[2] = params[3];
+//                output[3] = params[2];
+//            }
+//            if (output[0] < MIN_MAP || output[0] > MAX_MAP) output[0] = MIN_MAP;
+//            if (output[2] < MIN_MAP || output[2] > MAX_MAP) output[2] = MIN_MAP;
+//            if (output[1] > MAX_MAP || output[1] < MIN_MAP) output[1] = MAX_MAP;
+//            if (output[3] > MAX_MAP || output[3] < MIN_MAP) output[3] = MAX_MAP;
             return output;
         }
 
-        public static double[] ConvertPixelsToCoords(double[] coords)
-        {
+        public static double[] ConvertPixelsToCoords(double[] pixels) {
             // format used in service call: lat1, lat2, lon1, lon2
             double mapLength = MAX_X - MIN_X;
             double mapHeight = MAX_Y - MIN_Y;
-            double[] output = new double[4];
-            output[0] = MIN_X + (coords[0] * mapLength)/1000;
-            output[1] = MIN_X + (coords[1] * mapLength)/1000;
-            output[2] = MIN_Y + (coords[2] * mapHeight)/1000;
-            output[3] = MIN_Y + (coords[3] * mapHeight)/1000;
-            return output;
+            double[] coords = new double[4];
+
+//            coords[0] = MIN_X + (pixels[0] * mapLength)/1000;
+//            coords[1] = MIN_X + (pixels[1] * mapLength)/1000;
+//            coords[2] = MIN_Y + (pixels[2] * mapHeight)/1000;
+//            coords[3] = MIN_Y + (pixels[3] * mapHeight)/1000;
+
+            coords[0] = MAX_X - pixels[2] * mapLength / 1000;//szerokosc geo lewy punkt
+            coords[1] = MAX_X - pixels[3] * mapLength / 1000;//szerokosc geo prawy punkt
+            coords[2] = MIN_Y + pixels[0] * mapHeight / 1000;//dlugoosc geo lewy punkt
+            coords[3] = MIN_Y + pixels[1] * mapHeight / 1000;//dlugosc geo prawy punkt
+            return coords;
 
         }
     }
