@@ -259,10 +259,10 @@ public class MainActivity extends Activity implements Marshal {
                 output[2] = params[3];
                 output[3] = params[2];
             }
-            if (output[0] < MIN_MAP || output[0] > MAX_MAP) output[0] = MIN_MAP;
-            if (output[2] < MIN_MAP || output[2] > MAX_MAP) output[2] = MIN_MAP;
-            if (output[1] > MAX_MAP || output[1] < MIN_MAP) output[1] = MAX_MAP;
-            if (output[3] > MAX_MAP || output[3] < MIN_MAP) output[3] = MAX_MAP;
+            if (output[0] <= MIN_MAP || output[0] >= MAX_MAP) output[0] = MIN_MAP;
+            if (output[2] <= MIN_MAP || output[2] >= MAX_MAP) output[2] = MIN_MAP;
+            if (output[1] >= MAX_MAP || output[1] <= MIN_MAP) output[1] = MAX_MAP;
+            if (output[3] >= MAX_MAP || output[3] <= MIN_MAP) output[3] = MAX_MAP;
             return output;
         }
 
